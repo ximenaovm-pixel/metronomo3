@@ -16,17 +16,10 @@
       margin: 10px;
       padding: 10px 20px;
     }
-    #light {
-      width: 80px; height: 80px;
-      margin: 20px auto;
-      border-radius: 50%;
-      background: gray;
-    }
   </style>
 </head>
 <body>
-  <h1> Metrónomo </h1>
-  <div id="light"></div>
+  <h1>🎵 Metrónomo Online</h1>
   <label>BPM: <input type="number" id="bpm" value="120" min="30" max="300"></label><br>
   <button onclick="start()">▶ Iniciar</button>
   <button onclick="stop()">⏹ Detener</button>
@@ -54,12 +47,6 @@
       osc.stop(audioCtx.currentTime + 0.05);
     }
 
-    function flash() {
-      const light = document.getElementById("light");
-      light.style.background = "red";
-      setTimeout(() => light.style.background = "gray", 100);
-    }
-
     function start() {
       stop();
       const bpm = document.getElementById("bpm").value;
@@ -67,7 +54,6 @@
       let count = 0;
       intervalId = setInterval(() => {
         playClick(count % 4 === 0 ? 1200 : 800); // primer tiempo distinto
-        flash();
         count++;
       }, interval);
     }
