@@ -35,11 +35,9 @@
       osc.connect(envelope);
       envelope.connect(audioCtx.destination);
       
-      // Onda tipo triangle para sonido más de metrónomo
       osc.type = "triangle";
       osc.frequency.value = frequency;
       
-      // Envolvente rápida para clic seco
       envelope.gain.setValueAtTime(1, audioCtx.currentTime);
       envelope.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
       
