@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Metrónomo</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      text-align: center; 
+      background: #111; 
+      color: white;
+    }
+    h1 { margin-top: 20px; }
+    button, input {
+      font-size: 18px;
+      margin: 10px;
+      padding: 10px 20px;
+    }
+    #light {
+      width: 80px; height: 80px;
+      margin: 20px auto;
+      border-radius: 50%;
+      background: gray;
+    }
+  </style>
+</head>
+<body>
+  <h1> Metrónomo </h1>
+  <div id="light"></div>
+  <label>BPM: <input type="number" id="bpm" value="120" min="30" max="300"></label><br>
+  <button onclick="start()">▶ Iniciar</button>
+  <button onclick="stop()">⏹ Detener</button>
+
+  <script>
+    let audioCtx = null;
+    let intervalId = null;
+
+    function playClick(frequency=1000) {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const envelope = audioCtx.createGain();
+      osc.connect(envelope);
+      envelope.connect(audioCtx.destination);
+      
+      // Onda tipo triangle para sonido más de metrónomo
+      osc.type = "triangle";
+      osc.frequency.value = frequency;
+      
+      // Envolvente rápida para clic seco
+      envelope.gain.setValueAtTime(1, audioCtx.currentTime);
+      envelope.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+      
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 0.05);
+    }
+
+    function flash() {
+      const light = document.getElementById("light");
+      light.style.background = "red";
+      setTimeout(() => light.style.background = "gray", 100);
+    }
+
+    function start() {
+      stop();
+      const bpm = document.getElementById("bpm").value;
+      const interval = 60000 / bpm; 
+      let count = 0;
+      intervalId = setInterval(() => {
+        playClick(count % 4 === 0 ? 1200 : 800); // primer tiempo distinto
+        flash();
+        count++;
+      }, interval);
+    }
+
+    function stop() {
+      if (intervalId) clearInterval(intervalId);
+      intervalId = null;
+    }
+  </script>
+</body>
+</html>
